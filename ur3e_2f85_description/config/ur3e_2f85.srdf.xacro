@@ -1,0 +1,43 @@
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="ur">
+  <xacro:include filename="$(find ur_moveit_config)/srdf/ur_macro.srdf.xacro"/>
+  <xacro:ur_srdf name="ur" prefix=""/>
+  <group name="gripper"><joint name="robotiq_85_left_knuckle_joint"/></group>
+  <end_effector name="robotiq" parent_link="tool0" group="gripper" parent_group="ur_manipulator"/>
+  <disable_collisions link1="robotiq_85_base_link" link2="robotiq_85_left_knuckle_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_base_link" link2="robotiq_85_right_knuckle_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_base_link" link2="robotiq_85_left_finger_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_base_link" link2="robotiq_85_right_finger_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_base_link" link2="robotiq_85_left_inner_knuckle_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_base_link" link2="robotiq_85_right_inner_knuckle_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_base_link" link2="robotiq_85_left_finger_tip_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_base_link" link2="robotiq_85_right_finger_tip_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_left_knuckle_link" link2="robotiq_85_right_knuckle_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_left_knuckle_link" link2="robotiq_85_left_finger_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_left_knuckle_link" link2="robotiq_85_right_finger_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_left_knuckle_link" link2="robotiq_85_left_inner_knuckle_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_left_knuckle_link" link2="robotiq_85_right_inner_knuckle_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_left_knuckle_link" link2="robotiq_85_left_finger_tip_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_left_knuckle_link" link2="robotiq_85_right_finger_tip_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_right_knuckle_link" link2="robotiq_85_left_finger_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_right_knuckle_link" link2="robotiq_85_right_finger_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_right_knuckle_link" link2="robotiq_85_left_inner_knuckle_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_right_knuckle_link" link2="robotiq_85_right_inner_knuckle_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_right_knuckle_link" link2="robotiq_85_left_finger_tip_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_right_knuckle_link" link2="robotiq_85_right_finger_tip_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_left_finger_link" link2="robotiq_85_right_finger_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_left_finger_link" link2="robotiq_85_left_inner_knuckle_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_left_finger_link" link2="robotiq_85_right_inner_knuckle_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_left_finger_link" link2="robotiq_85_left_finger_tip_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_left_finger_link" link2="robotiq_85_right_finger_tip_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_right_finger_link" link2="robotiq_85_left_inner_knuckle_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_right_finger_link" link2="robotiq_85_right_inner_knuckle_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_right_finger_link" link2="robotiq_85_left_finger_tip_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_right_finger_link" link2="robotiq_85_right_finger_tip_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_left_inner_knuckle_link" link2="robotiq_85_right_inner_knuckle_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_left_inner_knuckle_link" link2="robotiq_85_left_finger_tip_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_left_inner_knuckle_link" link2="robotiq_85_right_finger_tip_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_right_inner_knuckle_link" link2="robotiq_85_left_finger_tip_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_right_inner_knuckle_link" link2="robotiq_85_right_finger_tip_link" reason="Gripper linkage"/>
+  <disable_collisions link1="robotiq_85_left_finger_tip_link" link2="robotiq_85_right_finger_tip_link" reason="Gripper linkage"/>
+  <disable_collisions link1="wrist_3_link" link2="robotiq_85_base_link" reason="Adjacent"/>
+</robot>

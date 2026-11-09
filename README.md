@@ -20,14 +20,13 @@ Simulation environment for a robot arm grasping task: a **UR3e** arm fitted with
 | Package / Folder | Description |
 | ---------------- | ----------- |
 | `ur3e_2f85_description` | Combined UR3e + 2F-85 URDF/xacro, controller config (`ur3e_2f85_controllers.yaml`) and the Gazebo world (`worlds/mvp3a_table_cube.sdf`) |
-| `ur3e_pick_lift` | Python node `fixed_pick_lift` that executes the pick-and-place task |
+| `ur3e_pick_lift` | Python nodes `fixed_pick_lift` and `moveit_pick_lift` that execute the pick-and-place task |
 | `demo.repos` | Third-party repos imported with `vcs import` (see Setup) |
 
 Third-party packages imported via `demo.repos`:
 
 | Repository | Branch | Description |
 | ---------- | ------ | ----------- |
-| [Universal_Robots_ROS2_Driver](https://github.com/UniversalRobots/Universal_Robots_ROS2_Driver) | `humble` | UR ROS 2 driver and controllers |
 | [Universal_Robots_ROS2_GZ_Simulation](https://github.com/UniversalRobots/Universal_Robots_ROS2_GZ_Simulation) | `humble` | UR Gazebo simulation launch files |
 | [Universal_Robots_ROS2_Description](https://github.com/UniversalRobots/Universal_Robots_ROS2_Description) | `humble` | UR robot description |
 | [robotiq-ros](https://github.com/robotiq/robotiq-ros) | `main` | Robotiq gripper description, controllers and driver |
@@ -81,7 +80,11 @@ source ~/gripper_grasp_ws/install/ur3e_2f85_description/share/ur3e_2f85_descript
 export GZ_SIM_RESOURCE_PATH=$HOME/gripper_grasp_ws/install/robotiq_description/share:$GZ_SIM_RESOURCE_PATH
 ```
 
-### 3. Run Gazebo
+### 3. Run with fixed joint angles (`fixed_pick_lift`)
+
+This workflow uses fixed joint angles for the pre-grasp and grasp poses.
+
+Start Gazebo:
 
 ```bash
 LIBGL_DRI3_DISABLE=1 ros2 launch ur_simulation_gz ur_sim_control.launch.py \
@@ -94,11 +97,46 @@ LIBGL_DRI3_DISABLE=1 ros2 launch ur_simulation_gz ur_sim_control.launch.py \
   launch_rviz:=false
 ```
 
-### 4. Execute the task script
-
 In a new terminal (after sourcing the workspace as in step 2):
 
 ```bash
 ros2 run controller_manager spawner robotiq_gripper_controller --controller-manager /controller_manager
 ros2 run ur3e_pick_lift fixed_pick_lift
+```
+
+### 4. Run with MoveIt (`moveit_pick_lift`)
+
+Use this workflow to plan the pick-and-lift motions with MoveIt. Run one workflow at a time. In each terminal, source ROS 2 and the workspace before running the commands:
+
+```bash
+source /opt/ros/humble/setup.bash
+source ~/gripper_grasp_ws/install/setup.bash
+```
+
+In terminal 1, start Gazebo and leave it running:
+
+```bash
+LIBGL_DRI3_DISABLE=1 ros2 launch ur_simulation_gz ur_sim_control.launch.py \
+  ur_type:=ur3e \
+  description_package:=ur3e_2f85_description \
+  description_file:=ur3e_2f85.urdf.xacro \
+  runtime_config_package:=ur3e_2f85_description \
+  controllers_file:=ur3e_2f85_controllers.yaml \
+  world_file:=$(ros2 pkg prefix --share ur3e_2f85_description)/worlds/mvp3a_table_cube.sdf \
+  launch_rviz:=false
+```
+
+In terminal 2, start MoveIt and leave it running:
+
+```bash
+ros2 launch ur3e_2f85_description moveit.launch.py
+```
+
+Once Gazebo and MoveIt are ready, use terminal 3 to spawn the gripper controller. After the spawner succeeds, execute the MoveIt task:
+
+```bash
+ros2 run controller_manager spawner \
+  robotiq_gripper_controller \
+  --controller-manager /controller_manager
+ros2 run ur3e_pick_lift moveit_pick_lift --ros-args -p use_sim_time:=true
 ```

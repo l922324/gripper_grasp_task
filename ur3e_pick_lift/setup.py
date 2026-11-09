@@ -24,6 +24,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
+            'moveit_pick_lift = ur3e_pick_lift.moveit_pick_lift:main',
             'fixed_pick_lift = ur3e_pick_lift.fixed_pick_lift:main',
         ],
     },
