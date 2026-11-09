@@ -21,10 +21,16 @@ Simulation environment for a robot arm grasping task: a **UR3e** arm fitted with
 | ---------------- | ----------- |
 | `ur3e_2f85_description` | Combined UR3e + 2F-85 URDF/xacro, controller config (`ur3e_2f85_controllers.yaml`) and the Gazebo world (`worlds/mvp3a_table_cube.sdf`) |
 | `ur3e_pick_lift` | Python node `fixed_pick_lift` that executes the pick-and-place task |
-| `Universal_Robots_ROS2_Description` | UR robot description (upstream) |
-| `Universal_Robots_ROS2_Driver` | UR ROS 2 driver and controllers (upstream) |
-| `Universal_Robots_ROS2_GZ_Simulation` | UR Gazebo simulation launch files (upstream) |
-| `robotiq_ros` | Robotiq gripper description, controllers and driver (upstream) |
+| `demo.repos` | Third-party repos imported with `vcs import` (see Setup) |
+
+Third-party packages imported via `demo.repos`:
+
+| Repository | Branch | Description |
+| ---------- | ------ | ----------- |
+| [Universal_Robots_ROS2_Driver](https://github.com/UniversalRobots/Universal_Robots_ROS2_Driver) | `humble` | UR ROS 2 driver and controllers |
+| [Universal_Robots_ROS2_GZ_Simulation](https://github.com/UniversalRobots/Universal_Robots_ROS2_GZ_Simulation) | `humble` | UR Gazebo simulation launch files |
+| [Universal_Robots_ROS2_Description](https://github.com/UniversalRobots/Universal_Robots_ROS2_Description) | `humble` | UR robot description |
+| [robotiq-ros](https://github.com/robotiq/robotiq-ros) | `main` | Robotiq gripper description, controllers and driver |
 
 ## Task Flow
 
@@ -44,12 +50,16 @@ The task script also verifies the lift distance by reading the `world -> tool0` 
 
 ## Setup
 
-### 0. Clone into a ROS 2 workspace
+### 0. Clone into a ROS 2 workspace and import third-party repos
+
+The UR and Robotiq packages are not stored in this repository; they are listed in `demo.repos` and imported with [vcstool](https://github.com/dirk-thomas/vcstool).
 
 ```bash
+sudo apt install python3-vcstool
 mkdir -p ~/robospec_ws/src
 cd ~/robospec_ws/src
 git clone <this-repo-url> gripper_grasp_task
+vcs import ~/robospec_ws/src < gripper_grasp_task/demo.repos
 ```
 
 ### 1. Install dependencies
