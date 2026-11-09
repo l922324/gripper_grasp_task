@@ -444,7 +444,7 @@ class FixedPickLift(Node):
 
         if not self.move_arm(
             GRASP_JOINTS,
-            duration=3.0
+            duration=1.0
         ):
             return self.fail('APPROACH_FAILED')
 

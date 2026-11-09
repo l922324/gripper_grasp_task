@@ -56,16 +56,16 @@ The UR and Robotiq packages are not stored in this repository; they are listed i
 
 ```bash
 sudo apt install python3-vcstool
-mkdir -p ~/robospec_ws/src
-cd ~/robospec_ws/src
+mkdir -p ~/gripper_grasp_ws/src
+cd ~/gripper_grasp_ws/src
 git clone <this-repo-url> gripper_grasp_task
-vcs import ~/robospec_ws/src < gripper_grasp_task/demo.repos
+vcs import ~/gripper_grasp_ws/src < gripper_grasp_task/demo.repos
 ```
 
 ### 1. Install dependencies
 
 ```bash
-cd ~/robospec_ws
+cd ~/gripper_grasp_ws
 rosdep update
 rosdep install --ignore-src --from-paths src -y
 sudo apt install ros-humble-gz-ros2-control
@@ -76,9 +76,9 @@ sudo apt install ros-humble-gz-ros2-control
 ```bash
 source /opt/ros/humble/setup.bash
 colcon build
-source ~/robospec_ws/install/setup.bash
-source ~/robospec_ws/install/ur3e_2f85_description/share/ur3e_2f85_description/local_setup.bash
-export GZ_SIM_RESOURCE_PATH=$HOME/robospec_ws/install/robotiq_description/share:$GZ_SIM_RESOURCE_PATH
+source ~/gripper_grasp_ws/install/setup.bash
+source ~/gripper_grasp_ws/install/ur3e_2f85_description/share/ur3e_2f85_description/local_setup.bash
+export GZ_SIM_RESOURCE_PATH=$HOME/gripper_grasp_ws/install/robotiq_description/share:$GZ_SIM_RESOURCE_PATH
 ```
 
 ### 3. Run Gazebo
