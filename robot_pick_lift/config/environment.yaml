@@ -1,0 +1,52 @@
+world_name: default
+reference_frame: world
+physics:
+  max_step_size: 0.001
+  real_time_factor: 1.0
+  gravity:
+  - 0.0
+  - 0.0
+  - -9.81
+floor_z: 0.0
+table:
+  size:
+  - 0.6
+  - 0.8
+  - 0.04
+  position:
+  - 0.45
+  - 0.0
+  - 0.0
+  orientation_rpy:
+  - 0.0
+  - 0.0
+  - 0.0
+  color:
+  - 0.5
+  - 0.5
+  - 0.5
+  - 1.0
+block:
+  size:
+  - 0.04
+  - 0.04
+  - 0.04
+  position:
+  - 0.45
+  - 0.0
+  - 0.04
+  orientation_rpy:
+  - 0.0
+  - 0.0
+  - 0.0
+  color:
+  - 0.0
+  - 0.8
+  - 0.0
+  - 1.0
+  mass: 0.05
+  friction: 1.0
+task:
+  lift_distance: 0.1
+  hold_seconds: 3.0
+  grasp_yaw_offset: 0.0

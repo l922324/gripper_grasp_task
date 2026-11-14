@@ -2,6 +2,27 @@
 
 Simulation environment for a robot arm grasping task: a **UR3e** or **Franka FR3** arm fitted with a **Robotiq 2F-85** gripper picks up a green block from a table top in Gazebo, lifts it, holds it, and puts it back down.
 
+`robot_pick_lift` provides one configuration-driven workflow for both arms. It
+brings up the Gazebo world, robot and gripper, activates their controllers, and
+starts MoveIt. The same package then executes the pick-and-lift task using the
+selected robot's configuration. Robot geometry and integration remain in the
+individual description packages.
+
+Three configuration files control the workflow:
+
+- `arm.yaml` in the selected description package: robot assembly, base pose,
+  controllers, planning group, tool link, and planning settings.
+- `gripper.yaml` in the selected description package: mounting and grasp
+  transforms, controller, open/close targets, and action settings.
+- [environment.yaml](robot_pick_lift/config/environment.yaml) in `robot_pick_lift`:
+  table and block sizes/poses, colors, physics, and task settings.
+
+Gazebo and the task's MoveIt collision scene use the same environment geometry.
+Before motion, the task checks target reachability and collision validity; an
+unsuccessful check or motion plan stops the task with an error. See the
+[package guide](robot_pick_lift/README.md) for configuration details and adding
+other robot models.
+
 ## Development Environment
 
 | Item       | Version      |
@@ -21,9 +42,10 @@ Simulation environment for a robot arm grasping task: a **UR3e** or **Franka FR3
 | Package / Folder | Description |
 | ---------------- | ----------- |
 | `ur3e_2f85_description` | Combined UR3e + 2F-85 URDF/xacro, controller config (`ur3e_2f85_controllers.yaml`) and the Gazebo world (`worlds/mvp3a_table_cube.sdf`) |
-| `ur3e_pick_lift` | Python nodes `fixed_pick_lift` and `moveit_pick_lift` that execute the pick-and-place task |
+| `robot_pick_lift` | Shared configuration-driven Gazebo bringup and MoveIt task; [usage and adding robots](robot_pick_lift/README.md) |
+| `ur3e_pick_lift` | Legacy UR3e task nodes, retained for compatibility |
 | `fr3_2f85_description` | FR3 + 2F-85 robot description and Gazebo and MoveIt launch files |
-| `fr3_pick_lift` | Python node `moveit_pick_lift` that executes the FR3 pick-and-lift task |
+| `fr3_pick_lift` | Legacy FR3 task node, retained for compatibility |
 | `demo.repos` | Third-party repos imported with `vcs import` (see Setup) |
 
 Third-party repositories imported via `demo.repos`:
@@ -52,7 +74,10 @@ Third-party repositories imported via `demo.repos`:
 10. Move the robot arm back to the pre-grasp position.
 11. Task complete.
 
-The selected robot's task script executes this sequence using its configured poses and end-effector frame. The UR3e fixed-angle script also verifies the lift distance using the `world -> tool0` TF before and after lifting, and fails if it is outside 100 mm ± 10 mm. On success it logs `PICKUP SIM PASS`.
+The shared `robot_pick_lift` task executes this sequence for either arm. The
+40 mm block, 100 mm lift, and three-second hold are defaults and can be changed
+through configuration. Task completion confirms motion/controller completion;
+it does not independently verify physical block capture.
 
 ## Setup
 
@@ -83,94 +108,84 @@ sudo apt install ros-humble-gz-ros2-control
 source /opt/ros/humble/setup.bash
 colcon build
 source ~/gripper_grasp_ws/install/setup.bash
-source ~/gripper_grasp_ws/install/ur3e_2f85_description/share/ur3e_2f85_description/local_setup.bash
-export GZ_SIM_RESOURCE_PATH=$HOME/gripper_grasp_ws/install/robotiq_description/share:$GZ_SIM_RESOURCE_PATH
 ```
 
-### 3. Run with fixed joint angles (`fixed_pick_lift`)
+### 3. Start the simulation with `robot_pick_lift`
 
-This workflow uses fixed joint angles for the pre-grasp and grasp poses.
-
-Start Gazebo:
-
-```bash
-LIBGL_DRI3_DISABLE=1 ros2 launch ur_simulation_gz ur_sim_control.launch.py \
-  ur_type:=ur3e \
-  description_package:=ur3e_2f85_description \
-  description_file:=ur3e_2f85.urdf.xacro \
-  runtime_config_package:=ur3e_2f85_description \
-  controllers_file:=ur3e_2f85_controllers.yaml \
-  world_file:=$(ros2 pkg prefix --share ur3e_2f85_description)/worlds/mvp3a_table_cube.sdf \
-  launch_rviz:=false
-```
-
-In a new terminal (after sourcing the workspace as in step 2):
-
-```bash
-ros2 run controller_manager spawner robotiq_gripper_controller --controller-manager /controller_manager
-ros2 run ur3e_pick_lift fixed_pick_lift
-```
-
-### 4. Run the UR3e with MoveIt (`moveit_pick_lift`)
-
-Use this workflow to plan the pick-and-lift motions with MoveIt. Run one workflow at a time. In each terminal, source ROS 2 and the workspace before running the commands:
+Run one robot workflow at a time. In each terminal, source ROS 2 and the workspace:
 
 ```bash
 source /opt/ros/humble/setup.bash
 source ~/gripper_grasp_ws/install/setup.bash
 ```
 
-In terminal 1, start Gazebo and leave it running:
+In terminal 1, choose one robot and leave the simulation running.
+
+For **UR3e + Robotiq 2F-85**:
 
 ```bash
-LIBGL_DRI3_DISABLE=1 ros2 launch ur_simulation_gz ur_sim_control.launch.py \
-  ur_type:=ur3e \
-  description_package:=ur3e_2f85_description \
-  description_file:=ur3e_2f85.urdf.xacro \
-  runtime_config_package:=ur3e_2f85_description \
-  controllers_file:=ur3e_2f85_controllers.yaml \
-  world_file:=$(ros2 pkg prefix --share ur3e_2f85_description)/worlds/mvp3a_table_cube.sdf \
-  launch_rviz:=false
+ros2 launch robot_pick_lift simulation.launch.py robot:=ur3e
 ```
 
-In terminal 2, start MoveIt and leave it running:
+For **Franka FR3 + Robotiq 2F-85**:
 
 ```bash
-ros2 launch ur3e_2f85_description moveit.launch.py
+ros2 launch robot_pick_lift simulation.launch.py robot:=fr3
 ```
 
-Once Gazebo and MoveIt are ready, use terminal 3 to spawn the gripper controller. After the spawner succeeds, execute the MoveIt task:
+The launcher creates the configured world, spawns the robot, activates the
+joint-state, arm, and gripper controllers, and starts MoveIt. No separate
+controller-spawner or MoveIt command is needed. Wait until MoveIt prints
+`You can start planning now!` before running the task.
+
+For a headless simulation, add `gui:=false`. If needed on your graphics setup,
+prefix the launch command with `LIBGL_DRI3_DISABLE=1`.
+
+### 4. Execute the pick-and-lift task
+
+In terminal 2, run the command matching the robot selected in step 3.
+
+For **UR3e**:
 
 ```bash
-ros2 run controller_manager spawner \
-  robotiq_gripper_controller \
-  --controller-manager /controller_manager
-ros2 run ur3e_pick_lift moveit_pick_lift --ros-args -p use_sim_time:=true
+ros2 launch robot_pick_lift pick_lift.launch.py robot:=ur3e
 ```
 
-### 5. Run the FR3 with the 2F-85 gripper and MoveIt
-
-This workflow executes the same pick-and-lift task using the Franka FR3 and Robotiq 2F-85 gripper. Run one robot workflow at a time. In each terminal, source ROS 2 and the workspace first:
+For **FR3**:
 
 ```bash
-source /opt/ros/humble/setup.bash
-source ~/gripper_grasp_ws/install/setup.bash
+ros2 launch robot_pick_lift pick_lift.launch.py robot:=fr3
 ```
 
-In terminal 1, start the FR3 simulation and leave it running:
+The task checks pregrasp, grasp, lift, and release targets before sending arm or
+gripper commands. If no collision-free IK solution is found, or a subsequent
+motion plan fails, the task exits with an error. The separately launched
+simulation stays running for inspection.
+
+### 5. Use custom configuration files
+
+To change table/block geometry or poses, copy and edit
+[environment.yaml](robot_pick_lift/config/environment.yaml). Supply the same file
+to both launch commands, using the same robot selection:
 
 ```bash
-LIBGL_DRI3_DISABLE=1 ros2 launch fr3_2f85_description fr3_sim.launch.py
+ros2 launch robot_pick_lift simulation.launch.py robot:=fr3 \
+  environment_config:=/absolute/path/my_environment.yaml
 ```
 
-In terminal 2, start MoveIt and leave it running:
+In another terminal, after MoveIt is ready:
 
 ```bash
-ros2 launch fr3_2f85_description moveit.launch.py
+ros2 launch robot_pick_lift pick_lift.launch.py robot:=fr3 \
+  environment_config:=/absolute/path/my_environment.yaml
 ```
 
-Once the simulation and MoveIt are ready, execute the task in terminal 3:
+Use `robot:=ur3e` in both commands for UR3e. Custom arm and gripper files can be
+supplied with `arm_config:=/absolute/path/arm.yaml` and
+`gripper_config:=/absolute/path/gripper.yaml`; pass the same files to simulation
+and task. Restart the simulation after editing configuration so its spawned
+objects match the task's collision scene.
 
-```bash
-ros2 run fr3_pick_lift moveit_pick_lift --ros-args -p use_sim_time:=true
-```
+For another description package, use `description_package:=my_arm_description`
+in both commands. See [adding a robot or gripper](robot_pick_lift/README.md#add-another-robot-or-gripper)
+for the required description and configuration interfaces.

@@ -1,5 +1,9 @@
 # UR3e MoveIt pick and lift
 
+For the shared configurable task, use [robot_pick_lift](../robot_pick_lift/README.md).
+This package remains available as the legacy UR3E implementation.
+
+
 Keep the existing Gazebo command. Source `/opt/ros/humble/setup.bash` and
 `~/gripper_grasp_ws/install/setup.bash` in each terminal.
 

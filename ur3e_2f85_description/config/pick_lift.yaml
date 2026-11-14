@@ -1,0 +1,23 @@
+robot_pick_lift:
+  ros__parameters:
+    planning_group: ur_manipulator
+    tool_link: tool0
+    tool_to_grasp_xyz:
+    - 0.0
+    - 0.0
+    - 0.145
+    tool_to_grasp_quaternion:
+    - 0.0
+    - 0.0
+    - 0.0
+    - 1.0
+    gripper_open: 0.0
+    gripper_close: 0.75
+    gripper_timeout: 10.0
+    settle_seconds: 0.0
+    release_clearance: 0.001
+    jump_threshold: 2.0
+    revolute_jump_threshold: 0.0
+    floor_contact_links:
+    - base_link
+    - base_link_inertia

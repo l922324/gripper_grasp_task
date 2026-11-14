@@ -2,6 +2,12 @@
 <robot xmlns:xacro="http://wiki.ros.org/xacro" name="$(arg name)">
    <!-- robot name parameter -->
    <xacro:arg name="name" default="ur"/>
+  <xacro:arg name="gripper_xyz" default="0 0 0"/>
+  <xacro:arg name="gripper_rpy" default="0 0 0"/>
+  <xacro:arg name="xyz" default="0 0 0"/>
+  <xacro:arg name="rpy" default="0 0 0"/>
+  <xacro:arg name="include_ground_plane" default="true"/>
+
    <!-- import main macro -->
    <!-- UR -->
   <xacro:include filename="$(find ur_description)/urdf/ur_macro.xacro"/>
@@ -63,13 +69,14 @@
 
    <!-- convert to property to use substitution in function -->
    <xacro:property name="initial_positions_file" default="$(arg initial_positions_file)"/>
+   <xacro:property name="include_ground_plane" value="$(arg include_ground_plane)"/>
    <xacro:property name="is_sim_gazebo" value="$(arg sim_gazebo)"/>
    <xacro:property name="is_sim_ignition" value="$(arg sim_ignition)"/>
 
    <!-- create link fixed to the "world" -->
    <link name="world" />
 
-   <xacro:if value="${is_sim_gazebo or is_sim_ignition}">
+   <xacro:if value="${(is_sim_gazebo or is_sim_ignition) and include_ground_plane}">
      <link name="ground_plane">
        <visual>
          <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -136,7 +143,7 @@
      verify_robot_model="$(arg verify_robot_model)"
      use_currents_as_efforts="$(arg use_currents_as_efforts)"
      >
-     <origin xyz="0 0 0" rpy="0 0 0" />          <!-- position robot in the world -->
+     <origin xyz="$(arg xyz)" rpy="$(arg rpy)" />
    </xacro:ur_robot>
 
    <!-- ============================================ -->
@@ -149,7 +156,7 @@
         parent="tool0"
         include_ros2_control="false">
 
-        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <origin xyz="$(arg gripper_xyz)" rpy="$(arg gripper_rpy)"/>
 
    </xacro:robotiq_gripper>
 

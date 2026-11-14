@@ -111,7 +111,8 @@ def test_scene_protects_floor_block_and_preserves_collision_matrix():
         return SimpleNamespace(success=True)
 
     fake = SimpleNamespace(scene=service, get_scene=service, wait=wait,
-                           value={'block_x': 0.45, 'block_y': 0.0, 'block_z': 0.04}.__getitem__)
+                           value={'block_x': 0.45, 'block_y': 0.0, 'block_z': 0.04,
+                                  'grasp_yaw': 0.0}.__getitem__)
     MoveItPickLift.add_table(fake)
     objects = {obj.id: obj for obj in applied[0].scene.world.collision_objects}
     assert set(objects) == {'pick_table', 'pick_block', 'pick_floor'}

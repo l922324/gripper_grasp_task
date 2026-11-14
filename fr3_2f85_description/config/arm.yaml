@@ -1,0 +1,49 @@
+model: fr3
+description:
+  package: fr3_2f85_description
+  path: urdf/fr3_gazebo.urdf.xacro
+semantic:
+  package: fr3_2f85_description
+  path: config/fr3_2f85.srdf.xacro
+xacro_arguments:
+  robot_type: fr3
+  hand: 'false'
+  gazebo: 'true'
+  gazebo_effort: 'false'
+pose:
+  position:
+  - 0.0
+  - 0.0
+  - 0.0
+  orientation_rpy:
+  - 0.0
+  - 0.0
+  - 0.0
+resource_packages:
+- franka_description
+- robotiq_description
+controller_file:
+  package: fr3_2f85_description
+  path: config/controllers.yaml
+controller: fr3_arm_controller
+joint_state_controller: joint_state_broadcaster
+kinematics:
+  package: franka_fr3_moveit_config
+  path: config/kinematics.yaml
+kinematics_keys: []
+ompl:
+  package: franka_fr3_moveit_config
+  path: config/ompl_planning.yaml
+ompl_group_aliases:
+  panda_arm: fr3_arm
+task:
+  planning_group: fr3_arm
+  tool_link: fr3_link8
+  floor_contact_links:
+  - fr3_link0
+  settle_seconds: 0.25
+  release_clearance: 0.006
+  jump_threshold: 0.0
+  revolute_jump_threshold: 0.2
+ompl_remove_groups:
+- panda_arm_hand

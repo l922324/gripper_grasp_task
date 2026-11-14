@@ -1,5 +1,9 @@
 # FR3 + Robotiq 2F-85 MoveIt pick and lift
 
+For the shared configurable task, use [robot_pick_lift](../robot_pick_lift/README.md).
+This package remains available as the legacy FR3 implementation.
+
+
 This package ports the current working `ur3e_pick_lift` task with the same
 pose-based workflow, table and green block, gripper action, 100 mm lift,
 three-second hold, and replacement 6 mm above the original grasp pose before

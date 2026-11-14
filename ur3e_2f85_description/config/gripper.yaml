@@ -1,0 +1,31 @@
+model: robotiq_2f85
+mount:
+  position:
+  - 0.0
+  - 0.0
+  - 0.0
+  orientation_rpy:
+  - 0.0
+  - 0.0
+  - 0.0
+controller_file:
+  package: ur3e_2f85_description
+  path: config/ur3e_2f85_controllers.yaml
+controller: robotiq_gripper_controller
+task:
+  gripper_open: 0.0
+  gripper_close: 0.75
+  gripper_timeout: 10.0
+  gripper_action: /robotiq_gripper_controller/gripper_cmd
+  gripper_joint: robotiq_85_left_knuckle_joint
+  gripper_max_effort: 50.0
+grasp:
+  position:
+  - 0.0
+  - 0.0
+  - 0.145
+  quaternion:
+  - 0.0
+  - 0.0
+  - 0.0
+  - 1.0

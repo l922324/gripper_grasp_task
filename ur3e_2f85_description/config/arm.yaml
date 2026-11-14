@@ -1,0 +1,50 @@
+model: ur3e
+description:
+  package: ur3e_2f85_description
+  path: urdf/ur3e_2f85.urdf.xacro
+semantic:
+  package: ur3e_2f85_description
+  path: config/ur3e_2f85.srdf.xacro
+xacro_arguments:
+  name: ur
+  ur_type: ur3e
+  sim_ignition: 'true'
+  include_ground_plane: 'false'
+pose:
+  position:
+  - 0.0
+  - 0.0
+  - 0.0
+  orientation_rpy:
+  - 0.0
+  - 0.0
+  - 0.0
+resource_packages:
+- ur_description
+- robotiq_description
+controller_file:
+  package: ur3e_2f85_description
+  path: config/ur3e_2f85_controllers.yaml
+controller: joint_trajectory_controller
+joint_state_controller: joint_state_broadcaster
+kinematics:
+  package: ur_moveit_config
+  path: config/kinematics.yaml
+kinematics_keys:
+- /**
+- ros__parameters
+- robot_description_kinematics
+ompl:
+  package: ur_moveit_config
+  path: config/ompl_planning.yaml
+ompl_group_aliases: {}
+task:
+  planning_group: ur_manipulator
+  tool_link: tool0
+  floor_contact_links:
+  - base_link
+  - base_link_inertia
+  settle_seconds: 0.0
+  release_clearance: 0.001
+  jump_threshold: 2.0
+  revolute_jump_threshold: 0.0

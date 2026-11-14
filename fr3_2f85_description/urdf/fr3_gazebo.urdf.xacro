@@ -19,6 +19,10 @@
     <!-- Gazebo extras -->
     <xacro:include filename="$(find franka_gazebo_bringup)/urdf/sensors.xacro"/>
 
+  <xacro:arg name="gripper_xyz" default="0 0 0"/>
+  <xacro:arg name="gripper_rpy" default="0 0 0"/>
+  <xacro:arg name="simulation_controllers" default="$(find fr3_2f85_description)/config/controllers.yaml"/>
+
     <!-- Robotiq 2F-85 -->
     <xacro:include filename="$(find robotiq_description)/urdf/robotiq_2f_85_macro.urdf.xacro"/>
 
@@ -69,7 +73,7 @@
         sim_gazebo="false"
         include_ros2_control="false">
 
-        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <origin xyz="$(arg gripper_xyz)" rpy="$(arg gripper_rpy)"/>
 
     </xacro:robotiq_gripper>
 
@@ -84,7 +88,7 @@
           name="ign_ros2_control::IgnitionROS2ControlPlugin">
 
         <parameters>
-          $(find fr3_2f85_description)/config/controllers.yaml
+          $(arg simulation_controllers)
         </parameters>
 
       </plugin>
