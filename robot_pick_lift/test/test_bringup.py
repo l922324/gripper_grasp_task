@@ -137,3 +137,17 @@ def test_mount_configuration_composes_grasp_transform(tmp_path):
                                             environment_config=str(ENVIRONMENT))
     assert parameters['tool_to_grasp_xyz'] == pytest.approx([0.155, 0.02, 0.03])
     assert parameters['tool_to_grasp_quaternion'] == pytest.approx([0., math.sin(math.pi/4), 0., math.cos(math.pi/4)])
+
+
+def test_profile_controller_tuning_preserves_other_settings():
+    from robot_pick_lift.bringup import controller_configuration
+    arm, gripper, _, _ = configuration('ur3e')
+    arm['controller_parameters'] = {'constraints': {'goal_time': 7.0}}
+    result = controller_configuration(arm, gripper)
+    constraints = result[arm['controller']]['ros__parameters']['constraints']
+    assert constraints['goal_time'] == 7.0
+    assert 'stopped_velocity_tolerance' in constraints
+    parameters = result[gripper['controller']]['ros__parameters']
+    assert parameters['stall_velocity_threshold'] == 0.01
+    assert parameters['stall_timeout'] == 2.0
+    assert parameters['goal_tolerance'] == 0.02

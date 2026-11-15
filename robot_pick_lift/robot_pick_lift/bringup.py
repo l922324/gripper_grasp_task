@@ -20,6 +20,21 @@ def controller_configuration(arm, gripper):
         manager[name] = copy.deepcopy(source['controller_manager']['ros__parameters'][name])
         if name in source:
             result[name] = copy.deepcopy(source[name])
+    # Keep robot-specific simulator tuning in the arm/gripper profiles rather
+    # than requiring edits to the referenced controller resource.
+    def merge(target, overrides):
+        for key, value in overrides.items():
+            if isinstance(value, dict) and isinstance(target.get(key), dict):
+                merge(target[key], value)
+            else:
+                target[key] = copy.deepcopy(value)
+    for profile in (arm, gripper):
+        overrides = profile.get('controller_parameters', {})
+        if not isinstance(overrides, dict):
+            raise ValueError('controller_parameters must be a mapping')
+        if overrides:
+            parameters = result.setdefault(profile['controller'], {}).setdefault('ros__parameters', {})
+            merge(parameters, overrides)
     return result
 
 

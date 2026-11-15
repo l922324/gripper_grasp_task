@@ -1,0 +1,46 @@
+scene:
+  # A reachable subset of the existing 0.60 x 0.80 m table, with edge clearance.
+  x_range: [0.35, 0.55]
+  y_range: [-0.15, 0.15]
+  table_top: 0.02
+  block_size: 0.04
+  cameras:
+    - name: d455_left
+      position: [0.75, -0.50, 0.65]
+      target: [0.45, 0.0, 0.04]
+    - name: d455_right
+      position: [0.75, 0.50, 0.65]
+      target: [0.45, 0.0, 0.04]
+  camera_width: 320
+  camera_height: 240
+  camera_rate: 2.0
+  horizontal_fov: 1.50098  # 86 degrees; ideal RGB-D approximation, not stereo physics.
+
+vision_pick_lift:
+  ros__parameters:
+    use_sim_time: true
+    camera_topics: [/d455_left/points, /d455_right/points]
+    observation_timeout: 60.0
+    # Simulation seconds: software-rendered cameras can arrive asynchronously.
+    # These bounds assume the cube is stationary during observation.
+    max_cloud_age: 5.0
+    max_camera_skew: 2.0
+    min_camera_points: 30
+    min_object_points: 100
+    voxel_size: 0.002
+    block_size: 0.04
+    table_top: 0.02
+    graspgen_endpoint: "tcp://127.0.0.1:5556"
+    inference_timeout: 60.0
+    num_grasps: 512
+    max_candidates: 20
+    minimum_score: 0.5
+    max_tilt_degrees: 5.0
+    # T_model_gripper_base_from_fr3_flange. Identity is an initial calibration:
+    # verify the server's Robotiq asset base convention against our zero mount.
+    model_base_to_flange_xyz: [0.0, 0.0, 0.0]
+    model_base_to_flange_rpy: [0.0, 0.0, 0.0]
+    gripper_tip_depth: 0.163
+    perception_only: false
+    execute: true
+    output_directory: ""

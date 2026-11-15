@@ -1,0 +1,4 @@
+# Install in the Python environment used to run the ROS task. No torch/CUDA needed.
+pyzmq>=25,<28
+msgpack>=1,<2
+msgpack-numpy==0.4.8

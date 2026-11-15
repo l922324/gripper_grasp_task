@@ -1,0 +1,32 @@
+# Camera settings and tabletop-local randomization; geometry is in environment.yaml.
+randomization:
+  enabled: true
+  seed: -1
+  x_range: [-0.10, 0.10]
+  y_range: [-0.15, 0.15]
+  yaw_range: [-3.141592653589793, 3.141592653589793]
+cameras:
+  - name: d455_left
+    position: [0.75, -0.50, 0.65]
+    target: [0.45, 0.0, 0.04]
+  - name: d455_right
+    position: [0.75, 0.50, 0.65]
+    target: [0.45, 0.0, 0.04]
+camera_width: 320
+camera_height: 240
+camera_rate: 2.0
+horizontal_fov: 1.50098
+near_clip: 0.4
+far_clip: 6.0
+parameters:
+  observation_timeout: 60.0
+  max_cloud_age: 5.0
+  max_camera_skew: 2.0
+  min_camera_points: 30
+  min_object_points: 100
+  voxel_size: 0.002
+  perception_only: false
+  execute: true
+  output_directory: /tmp/robot_observation
+  max_pose_drift: 0.005
+  max_yaw_drift_degrees: 5.0

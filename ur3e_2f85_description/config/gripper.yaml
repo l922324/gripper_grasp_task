@@ -12,9 +12,15 @@ controller_file:
   package: ur3e_2f85_description
   path: config/ur3e_2f85_controllers.yaml
 controller: robotiq_gripper_controller
+controller_parameters:
+  # Slow opening under contact must not be treated as a stalled gripper.
+  stall_velocity_threshold: 0.01
+  stall_timeout: 2.0
 task:
   gripper_open: 0.0
-  gripper_close: 0.75
+  # Calibrated for opposing faces of the supplied 40 mm block. A 0.75 rad
+  # target drives beyond contact and can keep the simulated fingers moving.
+  gripper_close: 0.47
   gripper_timeout: 10.0
   gripper_action: /robotiq_gripper_controller/gripper_cmd
   gripper_joint: robotiq_85_left_knuckle_joint

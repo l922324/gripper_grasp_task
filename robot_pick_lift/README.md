@@ -60,7 +60,11 @@ The FR3 and UR3e description packages each provide their own `arm.yaml` and
 `gripper.yaml`. Resource references use `{package: package_name, path: relative/path}`;
 an absolute filename is also accepted. Controller YAMLs are referenced by the
 arm/gripper files and merged into a generated configuration containing the
-selected controllers. Gazebo's ros2_control plugin owns the controller manager;
+selected controllers. Optional `controller_parameters` mappings in `arm.yaml`
+or `gripper.yaml` override individual controller parameters, preserving other
+settings (including nested settings). The UR3e gripper profile uses a 0.01 rad/s
+stall velocity threshold and two-second stall timeout so slow opening under
+contact is not stopped prematurely. Gazebo's ros2_control plugin owns the controller manager;
 the launcher does not start a second manager.
 
 Override any file using `arm_config`, `gripper_config`, or `environment_config`:
